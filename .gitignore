@@ -9,5 +9,7 @@ htmlcov/
 *.egg-info/
 .env
 .logcorr.toml
+CHANGELOG.md
+CONTRIBUTING.md
 dist/
 build/
