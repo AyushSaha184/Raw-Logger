@@ -17,13 +17,17 @@ FENCE_RE = re.compile(r"^```(?:json)?\s*|\s*```$", re.MULTILINE)
 @dataclass(slots=True)
 class GeminiAdapter:
     api_key: str | None = None
-    flash_model: str = "gemini-1.5-flash"
-    pro_model: str = "gemini-1.5-pro"
+    flash_model: str = ""
+    pro_model: str = ""
     no_llm: bool = False
 
     def __post_init__(self) -> None:
         self.no_llm = self.no_llm or os.getenv("LOG_CORR_NO_LLM", "").lower() == "true"
         self.api_key = self.api_key or os.getenv("GEMINI_API_KEY")
+        self.flash_model = (
+            self.flash_model or os.getenv("LOG_CORR_FLASH_MODEL") or "gemini-1.5-flash"
+        )
+        self.pro_model = self.pro_model or os.getenv("LOG_CORR_PRO_MODEL") or "gemini-1.5-pro"
 
     def _client(self, model: str) -> Any:
         if self.no_llm:

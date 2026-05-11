@@ -74,4 +74,8 @@ def load_config(path: str | None = None, *, no_llm: bool = False) -> AppConfig:
             setattr(cfg, field_name, data[field_name])
     cfg.gemini_api_key = data.get("gemini_api_key") or os.getenv("GEMINI_API_KEY")
     cfg.no_llm = no_llm or os.getenv("LOG_CORR_NO_LLM", "").lower() == "true"
+    cfg.pro_model = data.get("pro_model") or os.getenv("LOG_CORR_PRO_MODEL") or cfg.pro_model
+    cfg.flash_model = (
+        data.get("flash_model") or os.getenv("LOG_CORR_FLASH_MODEL") or cfg.flash_model
+    )
     return cfg

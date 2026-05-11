@@ -1,7 +1,7 @@
 [project]
-name = "log-corr"
+name = "rawlogger"
 version = "0.1.0"
-description = "Local-first AI log correlation agent with LangGraph-compatible orchestration"
+description = "A local-first CLI tool for correlating logs across multiple services"
 requires-python = ">=3.11"
 dependencies = [
     "typer[all]>=0.12",

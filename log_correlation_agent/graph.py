@@ -29,12 +29,17 @@ def build_graph() -> Any | None:
 
 
 def run_query(
-    conn: sqlite3.Connection, query: str, *, no_llm: bool = True, max_events: int = 200
+    conn: sqlite3.Connection,
+    query: str,
+    *,
+    no_llm: bool = True,
+    max_events: int = 200,
+    correlation_window_sec: int = 120,
 ) -> str:
     state: LogCorrelationState = {
         "timeline_db": conn,
         "user_query": query,
-        "correlation_window_sec": 120,
+        "correlation_window_sec": correlation_window_sec,
         "max_events_for_llm": max_events,
         "log_files": [],
         "used_llm": not no_llm,

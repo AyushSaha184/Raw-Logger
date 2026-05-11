@@ -57,7 +57,11 @@ def main(
                 timeline.insert_sync(parser.parse(line, service=service, source_file=str(path)))
         if query:
             response = run_query(
-                timeline.conn, query, no_llm=cfg.no_llm, max_events=cfg.max_events_for_llm
+                timeline.conn,
+                query,
+                no_llm=cfg.no_llm,
+                max_events=cfg.max_events_for_llm,
+                correlation_window_sec=cfg.correlation_window_sec,
             )
             console.print(response)
         else:
