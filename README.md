@@ -1,6 +1,6 @@
 # Raw Logger
 
-A local-first CLI tool for correlating logs across multiple services. It watches or ingests log files, normalizes timestamps with clock-skew estimation, stores events in an in-memory SQLite timeline, and answers operational questions like "what happened before this 500 error?"
+A local-first CLI tool for correlating logs across multiple services. It watches or ingests log files, normalizes timestamps with clock-skew estimation, stores events in an in-memory SQLite timeline.
 
 ## Features
 
@@ -16,42 +16,28 @@ A local-first CLI tool for correlating logs across multiple services. It watches
 
 ## Install
 
-### 1. Create a virtual environment
+### Option 1: Clone and Install
 
 ```bash
+git clone https://github.com/AyushSaha184/Raw-Logger.git
+cd Raw-Logger
+
+# Standard install
+pip install .
+
+# OR development install
 python -m venv .venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+pip install -e ".[dev]"
 ```
 
-### 2. Activate the virtual environment
+### Option 2: Direct Install from GitHub
 
-**On Windows (PowerShell):**
-```powershell
-.venv\Scripts\Activate
-```
-
-**On Windows (CMD):**
-```cmd
-.venv\Scripts\activate.bat
-```
-
-**On Linux/Mac:**
 ```bash
-source .venv/bin/activate
+pip install git+https://github.com/AyushSaha184/Raw-Logger.git
 ```
 
-### 3. Install the package
-
-**Option A: Standard install** (recommended for users)
-```bash
-pip install rawlogger
-```
-
-**Option B: Development install** (includes testing/linting tools)
-```bash
-pip install rawlogger[dev]
-```
-
-The standard install makes the `log-corr` command available. The dev install adds pytest, ruff, and mypy.
+This makes the `rawlogger` command available.
 
 ## Configuration
 
@@ -59,49 +45,50 @@ The standard install makes the `log-corr` command available. The dev install add
 
 1. Copy the example configuration file:
 ```bash
-cp .logcorr.toml.example .logcorr.toml
+cp .logcorr.toml.example your-config.toml
 ```
 
-2. Edit `.logcorr.toml` to configure your log sources and LLM settings
+2. Edit `your-config.toml` to configure your log sources and LLM settings
 
 ### Using environment variables
 
-Alternatively, you can set environment variables in a `.env` file (copy from `.env.example`):
+Alternatively, you can set environment variables in a `.env` file:
 
 ```bash
-cp .env.example .env
+# Set your Gemini API key
+export GEMINI_API_KEY=your_api_key_here
 ```
 
-Then edit `.env` with your preferred settings.
+Then run with `--no-llm` flag for local-only mode, or set the key for LLM-powered analysis.
 
 ## Quick Start
 
 ### Watch mode - Monitor logs in real-time
 
-Watch multiple log files and ask questions about ongoing events:
+Watch your log files and ask questions about ongoing events:
 
 ```bash
-log-corr --no-llm --watch ./api.log --watch ./worker.log --query "what caused the 500 error?"
+rawlogger --no-llm --watch your-api.log --watch your-worker.log --query "what caused the 500 error?"
 ```
 
 ### Query mode - Analyze existing logs
 
-Query previously ingested logs:
+Query logs you've already read:
 
 ```bash
-log-corr --no-llm --ingest ./api.log --query "how many errors occurred?"
+rawlogger --no-llm --ingest your-app.log --query "how many errors occurred?"
 ```
 
 ### Using config file
 
 ```bash
-log-corr --config .logcorr.toml --query "show me all auth failures in the last hour"
+rawlogger --config your-config.toml --query "show me all auth failures in the last hour"
 ```
 
 ### With LLM reasoning enabled
 
 ```bash
-log-corr --watch ./api.log --watch ./worker.log --query "what caused the cascade of failures?"
+rawlogger --watch your-api.log --watch your-worker.log --query "what caused the cascade of failures?"
 ```
 
 This uses the Gemini adapter to provide natural language explanations of correlated events.
@@ -111,27 +98,27 @@ This uses the Gemini adapter to provide natural language explanations of correla
 ### Watch multiple service logs
 
 ```bash
-log-corr \
-  --watch ./api-service.log \
-  --watch ./worker-service.log \
-  --watch ./database.log \
+rawlogger \
+  --watch your-api-service.log \
+  --watch your-worker-service.log \
+  --watch your-database.log \
   --query "find the root cause of the 500 errors"
 ```
 
 ### Ingest and query historical logs
 
 ```bash
-log-corr \
-  --ingest ./app.log \
-  --ingest ./nginx-access.log \
+rawlogger \
+  --ingest your-app.log \
+  --ingest your-nginx-access.log \
   --query "timeline of memory spike events"
 ```
 
 ### Filter by time range
 
 ```bash
-log-corr \
-  --watch ./app.log \
+rawlogger \
+  --watch your-app.log \
   --start-time "2024-01-15T10:00:00" \
   --end-time "2024-01-15T12:00:00" \
   --query "errors in this timeframe"
@@ -140,8 +127,8 @@ log-corr \
 ### Enable anomaly detection
 
 ```bash
-log-corr \
-  --watch ./app.log \
+rawlogger \
+  --watch your-app.log \
   --detect-anomalies \
   --query "what anomalies did you detect?"
 ```
@@ -218,13 +205,13 @@ ruff check log_correlation_agent
 
 ## Configuration Options
 
-### Config File (.logcorr.toml)
+### Config File (your-config.toml)
 
 ```toml
 [log_corr]
 # Watch or ingest log files
-watch = ["./app.log", "./worker.log"]
-ingest = ["./historical.log"]
+watch = ["your-app.log", "your-worker.log"]
+ingest = ["your-historical.log"]
 
 # LLM settings
 llm_enabled = true
