@@ -1,0 +1,69 @@
+# Log Correlation Agent config.
+# Copy to .logcorr.toml locally. Do not commit secrets.
+
+# Optional Gemini key. Prefer GEMINI_API_KEY in the environment.
+# gemini_api_key = "your_key_here"
+
+# Model used for complex causal analysis.
+pro_model = "gemini-1.5-pro"
+
+# Model used for summaries and fuzzy parsing.
+flash_model = "gemini-1.5-flash"
+
+[[log_files]]
+# Path to a log file to watch or pre-ingest.
+path = "/var/log/api.log"
+# Human service name used in answers.
+service_name = "api"
+# Format hint: json, nginx, apache, plaintext, or auto.
+format_hint = "auto"
+# Expected log cadence for silence detection.
+expected_log_freq_sec = 2
+
+# Minutes of events to keep in the in-memory timeline.
+retention_minutes = 120
+
+# Lines to preload on startup.
+startup_tail_lines = 100
+
+# Correlation window around a query anchor.
+correlation_window_sec = 120
+
+# Raw events to fetch before heuristic reduction.
+max_events_for_llm = 200
+
+# Sliding anomaly detection window.
+anomaly_window_sec = 60
+
+# Errors per window before spike alert.
+error_rate_threshold = 10
+
+# Auth failures per window before cascade alert.
+auth_failure_threshold = 5
+
+# Latency threshold to flag high-latency messages.
+latency_threshold_ms = 2000
+
+# Expected frequency multiplier before service silence.
+silence_multiplier = 5.0
+
+# Max regex match budget before LLM fallback.
+regex_timeout_ms = 50
+
+# INFO queue pressure percentage before sampling.
+backpressure_info_pct = 80
+
+# DEBUG queue pressure percentage before dropping debug events.
+backpressure_debug_pct = 50
+
+# Pattern cache location.
+pattern_cache_path = "~/.logcorr/pattern_cache.json"
+
+# Pattern cache LRU max entries.
+pattern_cache_max_size = 500
+
+# Gemini retry attempts.
+retry_attempts = 3
+
+# Gemini retry base wait in seconds.
+retry_wait = 2.0
